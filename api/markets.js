@@ -1,1 +1,20 @@
-module.exports = async function handler(req, res) { res.setHeader(Access-Control-Allow-Origin, *); res.setHeader(Access-Control-Allow-Methods, GET, OPTIONS); if (req.method === OPTIONS) { return res.status(204).end(); } if (req.method !== GET) { return res.status(405).json({ error: GET only }); } const url = new URL( https://api.elections.kalshi.com/trade-api/v2/markets ); url.searchParams.set(series_ticker, KXBTC15M); url.searchParams.set(limit, 1); try { const response = await fetch(url, { headers: { Accept: application/json } }); const data = await response.json(); res.setHeader(Cache-Control, no-store); return res.status(response.status).json(data); } catch (error) { return res.status(502).json({ error: Kalshi request failed, detail: String(error) }); } }
+module.exports = async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "GET only" });
+  }
+
+  try {
+    const url = "https://api.elections.kalshi.com/trade-api/v2/markets?series_ticker=KXBTC15M&limit=1";
+    const response = await fetch(url);
+    const data = await response.json();
+
+    return res.status(response.status).json(data);
+  } catch (error) {
+    return res.status(502).json({
+      error: "Kalshi request failed",
+      detail: String(error)
+    });
+  }
+};
