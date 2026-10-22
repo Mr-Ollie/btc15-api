@@ -1,4 +1,3 @@
-```javascript
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://mr-ollie.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -26,4 +25,3 @@ module.exports = async function handler(req, res) {
     return res.status(502).json({ error: 'Kalshi order book request failed', detail: String(error.message || error) });
   }
 };
-```
