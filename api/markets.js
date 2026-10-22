@@ -11,15 +11,24 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const url = new URL(
-      "https://api.elections.kalshi.com/trade-api/v2/markets"
-    );
+    const ticker = req.query.ticker;
+    const base = "https://api.elections.kalshi.com/trade-api/v2/markets";
+    let url;
 
-    url.searchParams.set("series_ticker", "KXBTC15M");
-    url.searchParams.set("limit", "100");
-    url.searchParams.set("status", "open");
+    if (ticker) {
+      if (!/^KXBTC15M-[A-Za-z0-9-]+$/.test(ticker)) {
+        return res.status(400).json({ error: "Invalid BTC15 ticker" });
+      }
 
-    const response = await fetch(url);
+      url = base + "/" + encodeURIComponent(ticker) + "/orderbook";
+    } else {
+      url = base + "?series_ticker=KXBTC15M&limit=100&status=open";
+    }
+
+    const response = await fetch(url, {
+      headers: { Accept: "application/json" }
+    });
+
     const data = await response.json();
 
     res.setHeader("Cache-Control", "no-store");
